@@ -37,6 +37,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,6 +56,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\MultiValueXYPointConverter.cs" />
+    <Compile Include="Converters\XYPointConverter.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Models\AsyncSimpleCommand.cs" />
+    <Compile Include="Models\PikvmInterface.cs" />
+    <Compile Include="Models\Pikvm_HttpClient.cs" />
+    <Compile Include="Models\tempvid.cs" />
+    <Compile Include="Models\SimpleCommand.cs" />
+    <Compile Include="ViewModels\MainVM.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,6 +79,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\Pikvm_ApiVideoStream.cs" />
+    <Compile Include="Models\Pikvm_Apiws.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -97,9 +109,12 @@
   <ItemGroup>
     <Folder Include="Configuration\" />
     <Folder Include="Controls\" />
-    <Folder Include="Converters\" />
-    <Folder Include="Models\" />
-    <Folder Include="ViewModels\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PiKvmLibrary\PiKvmLibrary.csproj">
+      <Project>{2fe4df0a-28af-47e1-b7b1-dba833f86784}</Project>
+      <Name>PiKvmLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

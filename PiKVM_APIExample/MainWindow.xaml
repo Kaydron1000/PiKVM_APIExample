@@ -4,9 +4,134 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PiKVM_APIExample"
+        xmlns:vm="clr-namespace:PiKVM_APIExample.ViewModels"
+        xmlns:m="clr-namespace:PiKVM_APIExample.Models"
+        xmlns:cv="clr-namespace:PiKVM_APIExample.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <cv:XYPointConverter x:Key="XYPointConverter"/>
+        <cv:MultiValueXYPointConverter x:Key="MultiValueXYPointConverter"/>
+    </Window.Resources>
+    <Window.DataContext>
+        <vm:MainVM/>
+    </Window.DataContext>
     <Grid>
+        <TabControl>
+            <TabItem Header="Video">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="160"/>
+                        <ColumnDefinition Width="3"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="3"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" BorderBrush="DarkGray" BorderThickness="1">
+                        <ScrollViewer>
+                            <StackPanel>
+                                <TextBlock Text="Test"/>
+                                <StackPanel Orientation="Horizontal" Margin="5">
+                                    <TextBlock Text="UN: "/>
+                                    <TextBox Text="{Binding UserName}" Width="100"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="5">
+                                    <TextBlock Text="PAS: "/>
+                                    <TextBox Text="{Binding PassWD}" Width="100"/>
+                                </StackPanel>
+                                <Button Content="Login" Command="{Binding LoginCommand}"/>
+                                <Button Content="New 1" Command="{Binding New1Command}"/>
+                                <Button Content="New 2" Command="{Binding New2Command}"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Margin="3" Text="{Binding VideoStream.FPS, FallbackValue=##, StringFormat='FPS: {0:F1}'}"/>
+                                    <TextBlock Grid.Column="1" Margin="3" Text="{Binding VideoStream.Bandwidth, FallbackValue=##}"/>
+                                </Grid>
+                                
+                                <Button Content="Connect Http Request" Command="{Binding ConnectHttpReqCommand}" Margin="5"/>
+                                <Button Content="Connect API WS" Command="{Binding ConnectApiWsCommand}" Margin="5"/>
+                                <Button Content="Connect Media WS" Command="{Binding ConnectMediaWsCommand}" Margin="5"/>
+                                <Button Content="Connect All" Command="{Binding ConnectCommand}" Margin="5"/>
+                                <Button Content="Mouse Move" Command="{Binding MouseMoveCommand}" Margin="5">
+                                    <Button.CommandParameter>
+                                        <MultiBinding Converter="{StaticResource MultiValueXYPointConverter}">
+                                            <Binding Path="MouseX"/>
+                                            <Binding Path="MouseY"/>
+                                        </MultiBinding>
+                                    </Button.CommandParameter>
+                                </Button>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" Text="X: "/>
+                                    <TextBox Margin="3" Text="{Binding MouseX}" Width="50"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Margin="3" Text="Y: "/>
+                                    <TextBox Margin="3" Text="{Binding MouseY}" Width="50"/>
+                                </StackPanel>
+                                <Button Content="Gen-Message" Command="{Binding GenericCommand}" CommandParameter="{Binding GenericMessage}"></Button>
+                                <TextBox Margin="5" Text="{Binding GenericMessage}" TextWrapping="Wrap" Height="100"/>
+                                <Button Content="Post-Http" Command="{Binding HttpPostCommand}" CommandParameter="{Binding HttpPostUri}"/>
+                                <TextBox Margin="5" Text="{Binding HttpPostUri}" TextWrapping="Wrap" Height="100"/>
+                                <Button Content="Get-Http" Command="{Binding HttpGetCommand}" CommandParameter="{Binding HttpGetUri}"/>
+                                <TextBox Margin="5" Text="{Binding HttpGetUri}" TextWrapping="Wrap" Height="100"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                    <GridSplitter Grid.Column="1" Margin="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="DarkGray"/>
+                    <Border Grid.Column="2" Margin="3" BorderBrush="DarkGray" BorderThickness="1">
+                        <Grid>
+                            <Canvas Background="WhiteSmoke" KeyDown="Canvas_KeyStroke" KeyUp="Canvas_KeyStroke" Focusable="True" PreviewMouseDown="Canvas_PreviewMouseDown">
+                                <Canvas.FocusVisualStyle>
+                                    <Style TargetType="Control">
+                                        <Setter Property="Control.Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Border BorderBrush="Orange" BorderThickness="1">
+                                                        <Border BorderBrush="Blue" BorderThickness="1"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Canvas.FocusVisualStyle>
+                                <Image Source="{Binding VideoBitmap}" Margin="2" />
+                            </Canvas>
+                        </Grid>
+                    </Border>
+                    <GridSplitter Grid.Column="3" Margin="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="DarkGray"/>
+                    <Grid Grid.Column="4">
+                        <ListView ItemsSource="{Binding LogMessages}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate DataType="m:LogMessage">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding TimeStamp, StringFormat={}[{0:yyyyMMdd_HHmmss} -- }" Margin="0,0,0,0"/>
+                                        <TextBlock Text="{Binding LogLevel, StringFormat={}{0}] :: }" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding Message}" Margin="0,0,5,0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Grid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Log">
+                <ListView ItemsSource="{Binding LogMessages}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate DataType="m:LogMessage">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding TimeStamp, StringFormat={}[{0:yyyyMMdd_HHmmss} -- }" Margin="0,0,0,0"/>
+                                <TextBlock Text="{Binding LogLevel, StringFormat={}{0}] :: }" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding Message}" Margin="0,0,5,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+        </TabControl>
         
     </Grid>
 </Window>

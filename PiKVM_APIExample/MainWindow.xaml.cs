@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PiKVM_APIExample.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,21 @@ namespace PiKVM_APIExample
         public MainWindow()
         {
             InitializeComponent();
+        }
+        private void Canvas_KeyStroke(object sender, KeyEventArgs e)
+        {
+            if (DataContext is MainVM vm)
+            {
+                vm.ApiWs.SendKeyboardKeyAsync(e);
+            }
+        }
+
+        private void Canvas_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Canvas canvas)
+            {
+                canvas.Focus();
+            }
         }
     }
 }
