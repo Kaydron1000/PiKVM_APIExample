@@ -210,6 +210,35 @@ namespace PiKVM_APIExample.ViewModels
             VideoStream.OnLogEvent += Processes_OnLogEvent;
 
 
+            PikvmInterface pikvmInterface = new PikvmInterface();
+            pikvmInterface.InitializeCommunication("https://192.168.1.183", "nefftest", "test");
+            pikvmInterface.SetResolution(800, 600);
+            pikvmInterface.SetMouseMode(MouseOutputType.usb_rel);
+            pikvmInterface.MoveMouse(MouseMode.Relative, -900, -900);
+            pikvmInterface.MoveMouse(MouseMode.Relative, 500, 400);
+            pikvmInterface.MouseClick(PiKvmLibrary.MouseButton.Right);
+
+
+            //ConfigurationData<PiKvmLibraryConfigurationType> config = new ConfigurationData<PiKvmLibraryConfigurationType>();
+            //ConnectionType connection = config.ApplicationConfiguration.Connections.Connection.First();
+
+            //connection.InitializeEndpoints();
+
+
+            //EndpointType[] endpoints = connection.Endpoints;
+
+            //EndpointType login = endpoints.First(o => o.Name == "Login_Endpoint");
+            //login.SendEndpoint(new object[] { "nefftest", "test" });
+
+            //connection.SetCredentials(login);
+
+            //EndpointType mouseType = endpoints.First(o => o.Name == "MouseOutputType_Endpoint");
+            //EndpointType mouseOutputRelMove = endpoints.First(o => o.Name == "MouseOutputRelative_Endpoint");
+
+
+            //mouseType.SendEndpoint(new object[] { "usb_rel" });
+            //mouseOutputRelMove.SendEndpoint(new object[] { "800", "800" });
+
 
             //VideoStream.OnImageRecieved += (sender, e) =>
             //{
