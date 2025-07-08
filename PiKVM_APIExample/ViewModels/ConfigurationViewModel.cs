@@ -15,7 +15,7 @@ namespace PiKVM_APIExample.ViewModels
         private ConfigurationData<PiKvmLibraryConfigurationType> _Configuration;
         private PiKvmLibraryConfigurationType _AppConfiguration;
         private ConnectionType _Connection;
-        private PiKvmLibrary.Configuration.json.Streamer.Resolution _Resolution;
+        //private PiKvmLibrary.Configuration.json.Streamer.Resolution _Resolution;
 
         private ObservableCollection<ConnectionType> _Connections;
         public ObservableCollection<ConnectionType> Connections 

@@ -211,6 +211,8 @@ namespace PiKVM_APIExample.ViewModels
 
 
             PikvmInterface pikvmInterface = new PikvmInterface();
+            pikvmInterface.OnLogEvent += (sender, logMessage) => Console.WriteLine(logMessage.TimeStamp);
+            pikvmInterface.OnHttpMessageEvent += (sender, message) => Console.WriteLine(message);
             pikvmInterface.InitializeCommunication("https://192.168.1.183", "nefftest", "test");
             pikvmInterface.SetResolution(800, 600);
             pikvmInterface.SetMouseMode(MouseOutputType.usb_rel);
@@ -277,7 +279,7 @@ namespace PiKVM_APIExample.ViewModels
         private async Task ExecuteNew1Command(object parameter)
         {
             string response = PikvmHttpClient.GetResponse("api/hid");
-            var nifo = HidInformationType.Deserialize(response);
+            //var nifo = HidInformationType.Deserialize(response);
         }
         private async Task ExecuteNew2Command(object parameter)
         {
