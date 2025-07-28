@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Cache;
@@ -208,19 +209,55 @@ namespace PiKVM_APIExample.ViewModels
 
             VideoStream.OnImageRecieved += OnVideoImageRecieved;
             VideoStream.OnLogEvent += Processes_OnLogEvent;
-
+            
 
             PikvmInterface pikvmInterface = new PikvmInterface();
             pikvmInterface.OnLogEvent += (sender, logMessage) => Console.WriteLine(logMessage.TimeStamp);
             pikvmInterface.OnHttpMessageEvent += (sender, message) => Console.WriteLine(message);
             pikvmInterface.InitializeCommunication("https://192.168.1.183", "nefftest", "test");
-            pikvmInterface.SetResolution(800, 600);
+            pikvmInterface.SetResolution(1920, 1080);
             pikvmInterface.SetMouseMode(MouseOutputType.usb_rel);
-            pikvmInterface.MoveMouse(MouseMode.Relative, -900, -900);
-            pikvmInterface.MoveMouse(MouseMode.Relative, 500, 400);
-            pikvmInterface.MouseClick(PiKvmLibrary.MouseButton.Right);
-
-
+            //pikvmInterface.MoveMouse(MouseMode.Relative, -120, -120);
+            //pikvmInterface.MoveMouse(MouseMode.Relative, 0, -120);
+            //pikvmInterface.MouseClick(PiKvmLibrary.MouseButton.Right);
+            pikvmInterface.OnLogEvent += (sender, e) => Debug.WriteLine($"{e.TimeStamp} - {e.LogLevel}: {e.Message}");
+            pikvmInterface.OnHttpMessageEvent += (sender, e) => Debug.WriteLine($"{e}");
+            try
+            {
+                pikvmInterface.SendPrintText("This\b\b is a test message from PiKVM API Example.");
+                pikvmInterface.SendKeyboardKey('\n');
+                pikvmInterface.SendPrintText("This is a test message from PiKVM API Example. 2", true);
+                pikvmInterface.SendKeyboardKey('\n');
+                pikvmInterface.SendPrintText("This is a test message from PiKVM API Example. 3", false, 10);
+                pikvmInterface.SendKeyboardKey((char)8); // Backspace
+                pikvmInterface.SendKeyboardKey((char)8); // Backspace
+                pikvmInterface.SendKeyboardKey('\b'); // Backspace
+                pikvmInterface.SendKeyboardKey('\b'); // Backspace
+                pikvmInterface.SendKeyboardKey('\n');
+                pikvmInterface.SendPrintText("This is a test message from PiKVM API Example. 4", false, 0, "da");
+                pikvmInterface.SendKeyboardKey('\n');
+                pikvmInterface.SendPrintText("This is a test message from PiKVM API Example. 5", true);
+                pikvmInterface.SendKeyboardKey('\n');
+                pikvmInterface.SendKeyboardMultiKey(new string[] { "ControlLeft", "ShiftLeft", "Escape" });
+                //pikvmInterface.MouseClick(PiKvmLibrary.MouseButton.Left);
+                //pikvmInterface.MouseClickState(PiKvmLibrary.MouseButton.Right, true);
+                //pikvmInterface.MouseClickState(PiKvmLibrary.MouseButton.Right, false);
+                //pikvmInterface.MouseClickState(PiKvmLibrary.MouseButton.Left, true);
+                //pikvmInterface.MouseClickState(PiKvmLibrary.MouseButton.Left, false);
+                //pikvmInterface.GenericRequest("MousMoveRelative", new object[] { "25", "25" });
+                //pikvmInterface.GenericRequest("MouseButtonState", new object[] { "right", true });
+                //pikvmInterface.GenericRequest("MouseButtonState", new object[] { "right", false });
+                //pikvmInterface.GenericRequest("MouseButtonSt", new object[] { "right", true });
+                //pikvmInterface.GenericRequest("MouseButtonSt", new object[] { "right", false });
+                //pikvmInterface.GenericRequest("MousMoveRelative", new object[] { 25, 25 });
+                //pikvmInterface.GenericRequest("MouseButtonState", new object[] { "right", true });
+                //pikvmInterface.GenericRequest("MousMoveRelative", new object[] { 25, 25 });
+            }
+            catch
+            (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
             //ConfigurationData<PiKvmLibraryConfigurationType> config = new ConfigurationData<PiKvmLibraryConfigurationType>();
             //ConnectionType connection = config.ApplicationConfiguration.Connections.Connection.First();
 
